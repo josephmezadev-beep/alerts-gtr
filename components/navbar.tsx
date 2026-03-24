@@ -11,7 +11,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, Bell, FileText, Zap, Clock, Timer, Key } from "lucide-react"
+import { LayoutDashboard, Bell, FileText, Zap, Clock, Timer, Key, Users } from "lucide-react"
 
 const alertsLinks = [
   {
@@ -55,6 +55,15 @@ const reportsLinks = [
     href: "/reports",
     description: "Generate and view reports",
     icon: FileText,
+  },
+]
+
+const workersLinks = [
+  {
+    title: "Workers",
+    href: "/workers",
+    description: "View and manage agent schedules",
+    icon: Users,
   },
 ]
 
@@ -131,6 +140,29 @@ export function Navbar() {
               <NavigationMenuContent>
                 <ul className="grid w-[300px] gap-1 p-2">
                   {reportsLinks.map((link) => (
+                    <ListItem
+                      key={link.href}
+                      title={link.title}
+                      href={link.href}
+                      icon={link.icon}
+                      isActive={pathname === link.href}
+                    >
+                      {link.description}
+                    </ListItem>
+                  ))}
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            {/* Workers */}
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="bg-transparent text-slate-300 hover:bg-slate-800/50 hover:text-cyan-400 data-[state=open]:bg-slate-800/50 data-[state=open]:text-cyan-400">
+                <Users className="mr-2 h-4 w-4" />
+                Workers
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[300px] gap-1 p-2">
+                  {workersLinks.map((link) => (
                     <ListItem
                       key={link.href}
                       title={link.title}

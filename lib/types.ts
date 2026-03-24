@@ -76,3 +76,39 @@ export interface Tier2BacklogInfo {
     cases: number
   }
 }
+
+// THT Ticket types
+export interface THTTicket {
+  id: string
+  agent: string
+  handlingTime: number
+  channel: string
+  department: string
+  queueName: string
+  chatStatus: string
+  assignedTimestamp: number
+  requestedTimestamp: number
+  organization: string
+  teamName: string
+}
+
+export interface THTTicketResponse {
+  cursor: {
+    currentPage: string
+    nextPage: string
+    previousPages: string[]
+  }
+  tickets: THTTicket[]
+}
+
+export interface THTAlertInfo {
+  ticketId: string
+  agentName: string
+  teamName: string
+  company: string
+  handlingTimeSeconds: number
+  handlingTimeFormatted: string
+  caseLink: string
+  supervisor: string | null
+  workerFound: boolean
+}

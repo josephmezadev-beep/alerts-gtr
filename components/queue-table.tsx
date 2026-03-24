@@ -4,9 +4,19 @@ import { useRef, useCallback, useState } from "react"
 import { toPng } from "html-to-image"
 import { Copy, Image, RefreshCw, Check, Users, Bike, Store, ClipboardList, Layers } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
 import type { TableRow, QueueData } from "@/lib/types"
-import { formatTableAsText, getCustomerTier1Info, getRiderTier1Info, formatBacklogText, getTier2BacklogInfo, getVendorTier1Info, formatCustomerTier1Text, formatDisponibilidadText, formatRiderTier1Text, formatVendorTier1Text } from "@/lib/data-utils"
+import { 
+  formatTableAsText, 
+  getCustomerTier1Info, 
+  getRiderTier1Info, 
+  getVendorTier1Info, 
+  getTier2BacklogInfo,
+  formatCustomerTier1Text,
+  formatRiderTier1Text,
+  formatVendorTier1Text,
+  formatDisponibilidadText,
+  formatBacklogText
+} from "@/lib/data-utils"
 
 interface QueueTableProps {
   data: TableRow[]
@@ -63,7 +73,6 @@ export function QueueTable({ data, rawData, isLoading, onRefresh }: QueueTablePr
   }, [rawData, handleCopy])
 
   const copyRiderTier1 = useCallback(async () => {
-    console.log(rawData)
     const info = getRiderTier1Info(rawData)
     const text = formatRiderTier1Text(info)
     await handleCopy(text, "rider")
@@ -90,7 +99,7 @@ export function QueueTable({ data, rawData, isLoading, onRefresh }: QueueTablePr
   }, [rawData, handleCopy])
 
   const getTier2Class = (channel: string) => {
-    if (channel.includes("Tier2")) {
+    if (channel.includes("TIER2")) {
       return "text-cyan-400 font-semibold"
     }
     return ""
@@ -113,7 +122,7 @@ export function QueueTable({ data, rawData, isLoading, onRefresh }: QueueTablePr
     return (
       <Button
         onClick={onClick}
-        disabled={rawData?.length === 0}
+        disabled={rawData.length === 0}
         variant="outline"
         className={`${colorClass} transition-all duration-300 disabled:opacity-50 text-xs px-3 py-2`}
       >
@@ -160,7 +169,7 @@ export function QueueTable({ data, rawData, isLoading, onRefresh }: QueueTablePr
             <thead>
               <tr className="border-b border-cyan-500/30 bg-gradient-to-r from-cyan-900/30 to-blue-900/30">
                 <th className="px-6 py-4 text-left font-bold uppercase tracking-wider text-cyan-300">
-                  Team
+                  Channel
                 </th>
                 <th className="px-6 py-4 text-center font-bold uppercase tracking-wider text-cyan-300">
                   Backlog
@@ -169,7 +178,7 @@ export function QueueTable({ data, rawData, isLoading, onRefresh }: QueueTablePr
                   Tickets
                 </th>
                 <th className="px-6 py-4 text-center font-bold uppercase tracking-wider text-cyan-300">
-                  Agents
+                  Head
                 </th>
               </tr>
             </thead>

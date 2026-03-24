@@ -10,26 +10,26 @@ export function processQueueData(data: QueueData[]): TableRow[] {
 
     // Customer mappings
     if (dept === "CS" && (expertise === "live-order" || expertise === "nonlive-order" || expertise === "tier1") && channel === "chat") {
-      return "Customer Tier1"
+      return "CUSTOMER TIER1"
     }
     if (dept === "CS" && expertise === "tier2" && channel === "case-inbox") {
-      return "Customer Tier2"
+      return "CUSTOMER TIER2"
     }
 
     // Rider mappings
     if (dept === "RS" && expertise === "tier1" && channel === "chat") {
-      return "Rider Tier1"
+      return "RIDER TIER1"
     }
     if (dept === "RS" && expertise === "tier2" && channel === "case-inbox") {
-      return "Rider Tier2"
+      return "RIDER TIER2"
     }
 
     // Vendor mappings
     if (dept === "VS" && expertise === "tier1" && channel === "chat") {
-      return "Vendor Chat"
+      return "VENDOR CHAT"
     }
     if (dept === "VS" && (expertise === "tier2" || expertise === "disputes") && channel === "case-inbox") {
-      return "Vendor Tier2"
+      return "VENDOR TIER2"
     }
 
     return null
@@ -50,22 +50,17 @@ export function processQueueData(data: QueueData[]): TableRow[] {
 
     channelMap[channelName].backlog += item.casesBacklog
     channelMap[channelName].tickets += item.activeTicketsCount
-    if (channelName == 'Customer Tier1' || channelName == 'Vendor Tier2'){
-      channelMap[channelName].head = Math.max(item.onlineAgentCount)
-    } else {
-      channelMap[channelName].head += item.onlineAgentCount
-    }
-    
+    channelMap[channelName].head += item.onlineAgentCount
   })
 
   // Order the channels
   const order = [
-    "Customer Tier1",
-    "Rider Tier1",
-    "Vendor Chat",
-    "Customer Tier2",
-    "Rider Tier2",
-    "Vendor Tier2",
+    "CUSTOMER TIER1",
+    "RIDER TIER1",
+    "VENDOR CHAT",
+    "CUSTOMER TIER2",
+    "RIDER TIER2",
+    "VENDOR TIER2",
   ]
 
   return order
@@ -85,7 +80,7 @@ export function getRoundedTime(): string {
 }
 
 export function formatTableAsText(rows: TableRow[]): string {
-  const header = "Team\tBacklog\tTickets\tAgents"
+  const header = "CHANNEL\tBacklog\tTICKETS\tHEAD"
   const dataRows = rows.map(
     (row) => `${row.channel}\t${row.backlog}\t${row.tickets}\t${row.head}`
   )
@@ -122,10 +117,10 @@ export function calculateAvailableAgents(agents: number, tickets: number): numbe
 
 // Get Customer Tier1 capacity info
 export function getCustomerTier1Info(data: QueueData[]): ChannelCapacityInfo {
-  const nonLiveItem = data?.find(
+  const nonLiveItem = data.find(
     (item) => item.queueName === "CS-chat-spa-ES-nonlive-order"
   )
-  const liveItem = data?.find(
+  const liveItem = data.find(
     (item) => item.queueName === "CS-chat-spa-ES-live-order"
   )
 
@@ -161,11 +156,10 @@ export function getCustomerTier1Info(data: QueueData[]): ChannelCapacityInfo {
 
 // Get Rider Tier1 capacity info
 export function getRiderTier1Info(data: QueueData[]): SimpleTier1Info {
-  console.log(data)
-  const item = data?.find(
+  const item = data.find(
     (item) => item.queueName === "RS-chat-spa-ES-tier1"
   )
-  console.log(item)
+
   const onlineAgents = item?.onlineAgentCount || 0
   const tickets = item?.activeTicketsCount || 0
   const concurrency = onlineAgents > 0 ? tickets / onlineAgents : 0
@@ -256,7 +250,7 @@ export function formatCustomerTier1Text(info: ChannelCapacityInfo): string {
 \t
 Total de Agentes: ${info.totalAgents} Agentes.\t
      • Agentes Control: ${info.controlAgents} Agentes.\t
-     • Agentes Live: ${info.liveAgents} Agentes.\t
+     •  Agentes Live: ${info.liveAgents} Agentes.\t
 \t
 Tickets: ${info.totalTickets} Tickets en gestión\t
      • Tickets No Live: ${info.nonLiveTickets} Contact\t
@@ -328,13 +322,13 @@ ${formatLine("Vendor Chat", vendorInfo.concurrency, vendorInfo.availableAgents)}
 export function formatBacklogText(info: Tier2BacklogInfo): string {
   const time = getRoundedTime()
   
-  const disputesText = info.disputes.cases >= 10000 
+  const disputesText = info.disputes.cases > 10000 
     ? "+10000 casos" 
     : `${info.disputes.cases} casos`
 
   return `BackLog de las 3 Verticales TIER 2 - ${time} HE
-↪ Customer: ${info.customer.cases} casos - con ${info.customer.hoursToSLA - 1} Hrs para estar fuera de Objetivo en SLA
-↪ Rider: ${info.rider.cases} casos - con ${info.rider.hoursToSLA - 1} Hrs para estar fuera de Objetivo en SLA
-↪ Vendor: ${info.vendor.cases} casos - con ${info.vendor.hoursToSLA - 1} Hrs para estar fuera de Objetivo en SLA
+↪ Customer: ${info.customer.cases} casos - con ${info.customer.hoursToSLA} Hrs para estar fuera de Objetivo en SLA
+↪ Rider: ${info.rider.cases} casos - con ${info.rider.hoursToSLA} Hrs para estar fuera de Objetivo en SLA
+↪ Vendor: ${info.vendor.cases} casos - con ${info.vendor.hoursToSLA} Hrs para estar fuera de Objetivo en SLA
 ↪ Disputes: ${disputesText}`
 }
