@@ -1,30 +1,36 @@
 "use client"
 
-import { useRef, useCallback } from "react"
+import { useRef, useCallback, useState } from "react"
 import { toPng } from "html-to-image"
-import { Copy, Image, RefreshCw, Check } from "lucide-react"
+import { Copy, Image, RefreshCw, Check, Users, Bike, Store, ClipboardList, Layers } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import type { TableRow } from "@/lib/types"
-import { formatTableAsText } from "@/lib/data-utils"
-import { useState } from "react"
+
+import type { TableRow, QueueData } from "@/lib/types"
+import { formatTableAsText, getCustomerTier1Info, getRiderTier1Info, formatBacklogText, getTier2BacklogInfo, getVendorTier1Info, formatCustomerTier1Text, formatDisponibilidadText, formatRiderTier1Text, formatVendorTier1Text } from "@/lib/data-utils"
 
 interface QueueTableProps {
   data: TableRow[]
+  rawData: QueueData[]
   isLoading: boolean
   onRefresh: () => void
 }
 
-export function QueueTable({ data, isLoading, onRefresh }: QueueTableProps) {
+type CopiedButton = "text" | "image" | "customer" | "rider" | "vendor" | "disponibilidad" | "backlog" | null
+
+export function QueueTable({ data, rawData, isLoading, onRefresh }: QueueTableProps) {
   const tableRef = useRef<HTMLDivElement>(null)
-  const [copiedText, setCopiedText] = useState(false)
-  const [copiedImage, setCopiedImage] = useState(false)
+  const [copiedButton, setCopiedButton] = useState<CopiedButton>(null)
+
+  const handleCopy = useCallback(async (text: string, buttonId: CopiedButton) => {
+    await navigator.clipboard.writeText(text)
+    setCopiedButton(buttonId)
+    setTimeout(() => setCopiedButton(null), 2000)
+  }, [])
 
   const copyAsText = useCallback(async () => {
     const text = formatTableAsText(data)
-    await navigator.clipboard.writeText(text)
-    setCopiedText(true)
-    setTimeout(() => setCopiedText(false), 2000)
-  }, [data])
+    await handleCopy(text, "text")
+  }, [data, handleCopy])
 
   const copyAsImage = useCallback(async () => {
     if (!tableRef.current) return
@@ -43,12 +49,45 @@ export function QueueTable({ data, isLoading, onRefresh }: QueueTableProps) {
           "image/png": blob,
         }),
       ])
-      setCopiedImage(true)
-      setTimeout(() => setCopiedImage(false), 2000)
+      setCopiedButton("image")
+      setTimeout(() => setCopiedButton(null), 2000)
     } catch (error) {
       console.error("Error copying image:", error)
     }
   }, [])
+
+  const copyCustomerTier1 = useCallback(async () => {
+    const info = getCustomerTier1Info(rawData)
+    const text = formatCustomerTier1Text(info)
+    await handleCopy(text, "customer")
+  }, [rawData, handleCopy])
+
+  const copyRiderTier1 = useCallback(async () => {
+    console.log(rawData)
+    const info = getRiderTier1Info(rawData)
+    const text = formatRiderTier1Text(info)
+    await handleCopy(text, "rider")
+  }, [rawData, handleCopy])
+
+  const copyVendorTier1 = useCallback(async () => {
+    const info = getVendorTier1Info(rawData)
+    const text = formatVendorTier1Text(info)
+    await handleCopy(text, "vendor")
+  }, [rawData, handleCopy])
+
+  const copyDisponibilidad = useCallback(async () => {
+    const customerInfo = getCustomerTier1Info(rawData)
+    const riderInfo = getRiderTier1Info(rawData)
+    const vendorInfo = getVendorTier1Info(rawData)
+    const text = formatDisponibilidadText(customerInfo, riderInfo, vendorInfo)
+    await handleCopy(text, "disponibilidad")
+  }, [rawData, handleCopy])
+
+  const copyBacklog = useCallback(async () => {
+    const info = getTier2BacklogInfo(rawData)
+    const text = formatBacklogText(info)
+    await handleCopy(text, "backlog")
+  }, [rawData, handleCopy])
 
   const getTier2Class = (channel: string) => {
     if (channel.includes("TIER2")) {
@@ -57,8 +96,39 @@ export function QueueTable({ data, isLoading, onRefresh }: QueueTableProps) {
     return ""
   }
 
+  const ActionButton = ({ 
+    onClick, 
+    buttonId, 
+    icon: Icon, 
+    label,
+    colorClass 
+  }: { 
+    onClick: () => void
+    buttonId: CopiedButton
+    icon: React.ElementType
+    label: string
+    colorClass: string
+  }) => {
+    const isCopied = copiedButton === buttonId
+    return (
+      <Button
+        onClick={onClick}
+        disabled={rawData?.length === 0}
+        variant="outline"
+        className={`${colorClass} transition-all duration-300 disabled:opacity-50 text-xs px-3 py-2`}
+      >
+        {isCopied ? (
+          <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-400" />
+        ) : (
+          <Icon className="w-3.5 h-3.5 mr-1.5" />
+        )}
+        {isCopied ? "Copied!" : label}
+      </Button>
+    )
+  }
+
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto">
       {/* Header with controls */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
@@ -153,7 +223,7 @@ export function QueueTable({ data, isLoading, onRefresh }: QueueTableProps) {
         </div>
       </div>
 
-      {/* Action buttons */}
+      {/* Table Action buttons */}
       <div className="flex items-center justify-center gap-4 mt-6">
         <Button
           onClick={copyAsText}
@@ -161,12 +231,12 @@ export function QueueTable({ data, isLoading, onRefresh }: QueueTableProps) {
           variant="outline"
           className="border-cyan-500/50 bg-slate-900/50 hover:bg-cyan-500/20 hover:border-cyan-400 text-cyan-300 transition-all duration-300 disabled:opacity-50"
         >
-          {copiedText ? (
+          {copiedButton === "text" ? (
             <Check className="w-4 h-4 mr-2 text-emerald-400" />
           ) : (
             <Copy className="w-4 h-4 mr-2" />
           )}
-          {copiedText ? "Copied!" : "Copy as Text"}
+          {copiedButton === "text" ? "Copied!" : "Copy as Text"}
         </Button>
         <Button
           onClick={copyAsImage}
@@ -174,13 +244,57 @@ export function QueueTable({ data, isLoading, onRefresh }: QueueTableProps) {
           variant="outline"
           className="border-blue-500/50 bg-slate-900/50 hover:bg-blue-500/20 hover:border-blue-400 text-blue-300 transition-all duration-300 disabled:opacity-50"
         >
-          {copiedImage ? (
+          {copiedButton === "image" ? (
             <Check className="w-4 h-4 mr-2 text-emerald-400" />
           ) : (
             <Image className="w-4 h-4 mr-2" />
           )}
-          {copiedImage ? "Copied!" : "Copy as Image"}
+          {copiedButton === "image" ? "Copied!" : "Copy as Image"}
         </Button>
+      </div>
+
+      {/* Capacity Action Buttons */}
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold text-cyan-300 mb-4 text-center">
+          Capacity Reports
+        </h3>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <ActionButton
+            onClick={copyCustomerTier1}
+            buttonId="customer"
+            icon={Users}
+            label="Customer Tier1"
+            colorClass="border-emerald-500/50 bg-slate-900/50 hover:bg-emerald-500/20 hover:border-emerald-400 text-emerald-300"
+          />
+          <ActionButton
+            onClick={copyRiderTier1}
+            buttonId="rider"
+            icon={Bike}
+            label="Rider Tier1"
+            colorClass="border-orange-500/50 bg-slate-900/50 hover:bg-orange-500/20 hover:border-orange-400 text-orange-300"
+          />
+          <ActionButton
+            onClick={copyVendorTier1}
+            buttonId="vendor"
+            icon={Store}
+            label="Vendor Tier1"
+            colorClass="border-purple-500/50 bg-slate-900/50 hover:bg-purple-500/20 hover:border-purple-400 text-purple-300"
+          />
+          <ActionButton
+            onClick={copyDisponibilidad}
+            buttonId="disponibilidad"
+            icon={ClipboardList}
+            label="Disponibilidad"
+            colorClass="border-yellow-500/50 bg-slate-900/50 hover:bg-yellow-500/20 hover:border-yellow-400 text-yellow-300"
+          />
+          <ActionButton
+            onClick={copyBacklog}
+            buttonId="backlog"
+            icon={Layers}
+            label="Backlog"
+            colorClass="border-red-500/50 bg-slate-900/50 hover:bg-red-500/20 hover:border-red-400 text-red-300"
+          />
+        </div>
       </div>
     </div>
   )

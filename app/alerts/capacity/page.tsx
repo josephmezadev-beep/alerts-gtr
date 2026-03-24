@@ -1,14 +1,15 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { QueueTable } from "@/components/queue-table"
-import type { ApiResponse, TableRow } from "@/lib/types"
+import type { ApiResponse, TableRow, QueueData } from "@/lib/types"
 import { processQueueData } from "@/lib/data-utils"
 
 const API_ENDPOINT = "https://api-glovo-eu.deliveryherocare.com/oneview/queue-monitor/v2/queues?token=%7B%22currentPage%22%3A%22%22%2C%22nextPage%22%3A%22%22%2C%22previousPages%22%3A%5B%5D%7D&pageSize=25&filter.queue.departments=CS%2CRS%2CVS&filter.queue.expertises=tier2%2Cdisputes%2Ctier1%2Clive-order%2Cnonlive-order&filter.channel=case-inbox%2Cchat&filter.queue.countries=ES&direction=desc&orderBy=queueName"
 
 export default function CapacityPage() {
   const [data, setData] = useState<TableRow[]>([])
+  const [rawData, setRawData] = useState<QueueData[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -39,6 +40,7 @@ export default function CapacityPage() {
       if (!response.ok) throw new Error("Failed to fetch data")
 
       const json: ApiResponse = await response.json()
+      setRawData(json.list)
       const processedData = processQueueData(json.list)
       setData(processedData)
     } catch (err) {
@@ -56,7 +58,12 @@ export default function CapacityPage() {
           {error}
         </div>
       )}
-      <QueueTable data={data} isLoading={isLoading} onRefresh={fetchData} />
+      <QueueTable 
+        data={data} 
+        rawData={rawData}
+        isLoading={isLoading} 
+        onRefresh={fetchData} 
+      />
     </div>
   )
 }
