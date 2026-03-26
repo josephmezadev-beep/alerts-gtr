@@ -112,3 +112,54 @@ export interface THTAlertInfo {
   supervisor: string | null
   workerFound: boolean
 }
+
+// Agent Monitor types for Adherence
+export interface AgentMonitorAttributes {
+  activeCasesCount: number
+  activeWorkload: number
+  channels: string[]
+  countries: string[]
+  email: string
+  expertises: string[]
+  lastLoginTime: string
+  name: string
+  occupancyRate: number
+  organization: string
+  potentialChatWorkload: number
+  queues: string[]
+  teamId: string
+  teamName: string
+  timeInStatus: number
+  timezone: string
+  updatedAt: string
+}
+
+export interface AgentMonitorAgent {
+  adherence: string
+  attributes: AgentMonitorAttributes
+  averageHandlingTime: number
+  department: string
+  generic_status: string
+  id: string
+  statusAlias: string
+}
+
+export interface AgentMonitorResponse {
+  cursor: {
+    currentPage: string
+    nextPage: string
+    previousPages: string[]
+  }
+  list: AgentMonitorAgent[]
+}
+
+export interface AuxiliarAlertInfo {
+  agentEmail: string
+  agentName: string
+  teamName: string
+  supervisor: string | null
+  statusAlias: string
+  statusFormatted: string
+  timeInStatus: number
+  timeFormatted: string
+}
