@@ -88,6 +88,16 @@ export interface THTHighResponse {
 
 // Team options for filters
 export const SLA_BREACHED_TEAMS = [
+  "Customer Tier1",
+  "Rider Tier1",
+  "Vendor Chat",
+  "Vendor Call",
+  "Customer Tier2",
+  "Rider Tier2",
+  "Vendor Tier2",
+] as const
+
+export const CONTACT_REASON_TEAMS = [
   "Customer Live",
   "Customer No Live",
   "Rider Tier1",
@@ -98,18 +108,9 @@ export const SLA_BREACHED_TEAMS = [
   "Vendor Tier2",
 ] as const
 
-export const CONTACT_REASON_TEAMS = [
-  "Customer Tier1",
-  "Rider Tier1",
-  "Vendor Chat",
-  "Vendor Call",
-  "Customer Tier2",
-  "Rider Tier2",
-  "Vendor Tier2",
-] as const
-
 export const THT_HIGH_TEAMS = [
-  "Customer Tier1",
+  "Customer Live",
+  "Customer No Live",
   "Rider Tier1",
   "Vendor Chat",
   "Vendor Call",
