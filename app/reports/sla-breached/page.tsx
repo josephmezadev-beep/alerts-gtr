@@ -94,20 +94,40 @@ export default function SLABreachedPage() {
   )
 
   const handleCopyAgentsText = async () => {
+    let intervalText = "Todo el dia";
+
+    if (startInterval && endInterval) {
+      intervalText = `${startInterval} - ${endInterval}`;
+    } else if (startInterval) {
+      // Tomamos la hora base y armamos :59
+      const hour = startInterval.split(":")[0];
+      intervalText = `${hour}:00 - ${hour}:59`;
+    }
+
     const text = formatSLAAgentsAlertText(
       allAgents,
       selectedTeam === "all" ? "Todos los teams" : selectedTeam,
-      startInterval && endInterval ? `${startInterval} - ${endInterval}` : "Todo el dia",
+      intervalText,
       zone
-    )
+    );
     await navigator.clipboard.writeText(text)
   }
 
   const handleCopySupervisorsText = async () => {
+    let intervalText = "Todo el dia";
+
+    if (startInterval && endInterval) {
+      intervalText = `${startInterval} - ${endInterval}`;
+    } else if (startInterval) {
+      // Tomamos la hora base y armamos :59
+      const hour = startInterval.split(":")[0];
+      intervalText = `${hour}:00 - ${hour}:59`;
+    }
+
     const text = formatSLASupervisorsAlertText(
       allSupervisors,
       selectedTeam === "all" ? "Todos los teams" : selectedTeam,
-      startInterval && endInterval ? `${startInterval} - ${endInterval}` : "Todo el dia",
+      intervalText,
       zone
     )
     await navigator.clipboard.writeText(text)

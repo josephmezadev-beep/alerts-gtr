@@ -85,6 +85,7 @@ export function processTHTTicket(ticket: THTTicket, workers: Worker[]): THTAlert
     teamName: worker.team.name,
     company: getCompanyFromContractType(worker.contract_type.name),
     handlingTimeSeconds: ticket.handlingTime,
+    tenure: worker.tenure || 0,
     handlingTimeFormatted: `${timeFormatted.short} (${timeFormatted.full})`,
     caseLink: `https://glovo-eu.deliveryherocare.com/cases/${ticket.id}`,
     supervisor: worker.supervisor,

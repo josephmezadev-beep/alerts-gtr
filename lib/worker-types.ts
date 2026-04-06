@@ -57,7 +57,7 @@ export interface Worker {
   api_email: string | null
   observation_1: string | null
   observation_2: string | null
-  tenure: number | null
+  tenure: number
   productive: string | null
   schedules: WorkerSchedule[]
 }

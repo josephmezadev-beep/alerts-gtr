@@ -239,10 +239,10 @@ export default function THTPage() {
   }
 
 const getTenureLabel = (tenure: number) => {
-  if (tenure === 0) return { label: "Menos de 1 mes", color: "text-red-400" }
-  if (tenure >= 1 && tenure <= 3) return { label: "De 1 a 3 meses", color: "text-orange-400" }
-  if (tenure > 3 && tenure <= 6) return { label: "De 3 a 6 meses", color: "text-yellow-400" }
-  return { label: "Más de 6 meses", color: "text-green-400" }
+  if (tenure <= 3) return { label: "Menos de 3 mes", color: "text-red-400" }
+  if (tenure > 3 && tenure <= 6) return { label: "De 3 a 6 meses", color: "text-orange-400" }
+  if (tenure > 6 && tenure <= 12) return { label: "De 6 a 12 meses", color: "text-yellow-400" }
+  return { label: "Más de 1 año", color: "text-green-400" }
 }
 
 const getHandlingTimeColor = (seconds: number) => {
@@ -335,6 +335,9 @@ const renderAlertTable = (
               <tbody>
                 {teamAlerts.map((alert) => {
                   const tenureInfo = getTenureLabel(alert.tenure)
+                  console.log(tenureInfo)
+                  console.log(alert)
+                  console.log(alert.tenure)
                   const handlingColor = getHandlingTimeColor(alert.handlingTimeSeconds)
 
                   return (
@@ -515,7 +518,7 @@ const renderAlertTable = (
                 <span className="ml-2 text-muted-foreground">Cargando datos...</span>
               </div>
             ) : (
-              renderAlertButtons(rsTier1Alerts, groupedRsTier1Alerts)
+              renderAlertTable(rsTier1Alerts, groupedRsTier1Alerts)
             )}
           </div>
 
@@ -537,7 +540,7 @@ const renderAlertTable = (
                 <span className="ml-2 text-muted-foreground">Cargando datos...</span>
               </div>
             ) : (
-              renderAlertButtons(vsTier1Alerts, groupedVsTier1Alerts)
+              renderAlertTable(vsTier1Alerts, groupedVsTier1Alerts)
             )}
           </div>
 
@@ -559,7 +562,7 @@ const renderAlertTable = (
                 <span className="ml-2 text-muted-foreground">Cargando datos...</span>
               </div>
             ) : (
-              renderAlertButtons(csTier2Alerts, groupedCsTier2Alerts)
+              renderAlertTable(csTier2Alerts, groupedCsTier2Alerts)
             )}
           </div>
 
@@ -581,7 +584,7 @@ const renderAlertTable = (
                 <span className="ml-2 text-muted-foreground">Cargando datos...</span>
               </div>
             ) : (
-              renderAlertButtons(rsTier2Alerts, groupedRsTier2Alerts)
+              renderAlertTable(rsTier2Alerts, groupedRsTier2Alerts)
             )}
           </div>
 
@@ -603,7 +606,7 @@ const renderAlertTable = (
                 <span className="ml-2 text-muted-foreground">Cargando datos...</span>
               </div>
             ) : (
-              renderAlertButtons(vsTier2Alerts, groupedVsTier2Alerts)
+              renderAlertTable(vsTier2Alerts, groupedVsTier2Alerts)
             )}
           </div>
 

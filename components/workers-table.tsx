@@ -240,7 +240,7 @@ export function WorkersTable() {
     const emails = filteredWorkers
       .filter((w) => w.api_email)
       .map((w) => w.api_email)
-      .join(" ")
+      .join("\n")
 
     try {
       await navigator.clipboard.writeText(emails)
