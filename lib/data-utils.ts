@@ -351,8 +351,8 @@ export function formatBacklogText(info: Tier2BacklogInfo): string {
     : `${info.disputes.cases} casos`
 
   return `BackLog de las 3 Verticales TIER 2 - ${time} HE
-↪ Customer: ${info.customer.cases} casos - con ${info.customer.hoursToSLA} Hrs para estar fuera de Objetivo en SLA
-↪ Rider: ${info.rider.cases} casos - con ${info.rider.hoursToSLA} Hrs para estar fuera de Objetivo en SLA
-↪ Vendor: ${info.vendor.cases} casos - con ${info.vendor.hoursToSLA} Hrs para estar fuera de Objetivo en SLA
+↪ Customer: ${info.customer.cases} casos - con ${info.customer.hoursToSLA - 1 } Hrs para estar fuera de Objetivo en SLA
+↪ Rider: ${info.rider.cases} casos - con ${info.rider.hoursToSLA - 1} Hrs para estar fuera de Objetivo en SLA
+↪ Vendor: ${info.vendor.cases} casos - con ${info.vendor.hoursToSLA - 1} Hrs para estar fuera de Objetivo en SLA
 ↪ Disputes: ${disputesText}`
 }
