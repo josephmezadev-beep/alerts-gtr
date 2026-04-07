@@ -56,7 +56,10 @@ export function processQueueData(data: QueueData[]): TableRow[] {
     } else {
       channelMap[channelName].head += item.onlineAgentCount
     }
-    
+
+    if (channelName == "Vendor Tier2") {
+      channelMap[channelName].backlog += 6423
+    }
   })
 
   // Order the channels
@@ -356,7 +359,7 @@ export function formatBacklogText(info: Tier2BacklogInfo): string {
   //   ? "+10000 casos" 
   //   : `${info.disputes.cases} casos`
 
-  return `BackLog de las 3 Verticales TIER 2 - ${time} HE
+  return `${toBoldUnicode(`BackLog de las 3 Verticales TIER 2 - ${time} HE`)}
 ↪ Customer: ${info.customer.cases} casos - ${textCustomer}
 ↪ Rider: ${info.rider.cases} casos - ${textRider}
 ↪ Vendor: ${info.vendor.cases} casos - ${textVendor}
