@@ -360,5 +360,5 @@ export function formatBacklogText(info: Tier2BacklogInfo): string {
 ↪ Customer: ${info.customer.cases} casos - ${textCustomer}
 ↪ Rider: ${info.rider.cases} casos - ${textRider}
 ↪ Vendor: ${info.vendor.cases} casos - ${textVendor}
-↪ Disputes: ${disputesText}`
+↪ Disputes: ${disputesText} casos`
 }
