@@ -348,9 +348,9 @@ export function formatBacklogText(info: Tier2BacklogInfo): string {
   let textCustomer = ''
   info.customer.hoursToSLA <= 0 ? textCustomer = 'SLA Vencido 🚨🚨' : textCustomer = `con ${info.customer.hoursToSLA - 1 } Hrs para estar fuera de Objetivo en SLA`
   let textRider = ''
-  info.customer.hoursToSLA <= 0 ? textRider = 'SLA Vencido 🚨🚨' : textRider = `con ${info.customer.hoursToSLA - 1 } Hrs para estar fuera de Objetivo en SLA`
+  info.rider.hoursToSLA <= 0 ? textRider = 'SLA Vencido 🚨🚨' : textRider = `con ${info.rider.hoursToSLA - 1 } Hrs para estar fuera de Objetivo en SLA`
   let textVendor = ''
-  info.customer.hoursToSLA <= 0 ? textVendor = 'SLA Vencido 🚨🚨' : textVendor = `con ${info.customer.hoursToSLA - 1 } Hrs para estar fuera de Objetivo en SLA`
+  info.vendor.hoursToSLA <= 0 ? textVendor = 'SLA Vencido 🚨🚨' : textVendor = `con ${info.vendor.hoursToSLA - 1 } Hrs para estar fuera de Objetivo en SLA`
   const disputesText = info.disputes.cases > 10000 
     ? "+10000 casos" 
     : `${info.disputes.cases} casos`
