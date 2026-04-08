@@ -37,26 +37,28 @@ export function formatHandlingTime(seconds: number): { short: string; full: stri
 
 // Find worker by last two words of agent name
 export function findWorkerByAgent(agentName: string, workers: Worker[]): Worker | null {
-  const nameParts = agentName.trim().split(/\s+/)
-  
-  if (nameParts.length < 2) return null
-  
-  // Get last two words (apellidos)
-  const lastTwoWords = nameParts.slice(-2).join(' ').toLowerCase()
-  
-  // Find workers that match the last two words
+  console.log(agentName)
+  const searchParts = agentName.trim().toLowerCase().split(/\s+/)
+
+  if (searchParts.length === 0) return null
+
   const matches = workers.filter(worker => {
-    const workerNameParts = worker.name.trim().split(/\s+/)
-    if (workerNameParts.length < 2) return false
-    const workerLastTwo = workerNameParts.slice(-2).join(' ').toLowerCase()
-    return workerLastTwo === lastTwoWords
+    const workerParts = worker.name.trim().toLowerCase().split(/\s+/)
+
+    // Caso 1: match exacto de últimos N elementos (apellidos normalmente)
+    const workerLast = workerParts.slice(-searchParts.length).join(' ')
+    const searchFull = searchParts.join(' ')
+    if (workerLast === searchFull) return true
+
+    // Caso 2: match flexible → todos los términos existen en el nombre
+    return searchParts.every(part => workerParts.includes(part))
   })
-  
-  // Only return if exactly one match
+
+  // Evitar ambigüedad
   if (matches.length === 1) {
     return matches[0]
   }
-  
+
   return null
 }
 
