@@ -58,7 +58,7 @@ export function processQueueData(data: QueueData[]): TableRow[] {
     }
 
     if (channelName == "Vendor Tier2") {
-      channelMap[channelName].backlog += (6423/2)
+      channelMap[channelName].backlog += (7901/2)
     }
   })
 
@@ -354,7 +354,7 @@ export function formatBacklogText(info: Tier2BacklogInfo): string {
   info.rider.hoursToSLA <= 0 ? textRider = 'SLA Vencido 🚨🚨' : textRider = `con ${info.rider.hoursToSLA - 1 } Hrs para estar fuera de Objetivo en SLA`
   let textVendor = ''
   info.vendor.hoursToSLA <= 0 ? textVendor = 'SLA Vencido 🚨🚨' : textVendor = `con ${info.vendor.hoursToSLA - 1 } Hrs para estar fuera de Objetivo en SLA`
-  const disputesText = '16423'
+  const disputesText = '17901'
   // const disputesText = info.disputes.cases > 10000 
   //   ? "+10000 casos" 
   //   : `${info.disputes.cases} casos`
