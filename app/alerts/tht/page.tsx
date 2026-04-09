@@ -146,6 +146,7 @@ export default function THTPage() {
       // Process tickets and match with workers
       const alerts: THTAlertInfo[] = []
       for (const ticket of highTHTTickets) {
+        console.log(ticket)
         const alertInfo = processTHTTicket(ticket, workers)
         if (alertInfo) {
           alerts.push(alertInfo)

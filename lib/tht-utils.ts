@@ -35,33 +35,32 @@ export function formatHandlingTime(seconds: number): { short: string; full: stri
   }
 }
 
+function normalizeText(text: string): string {
+  return text
+    .normalize("NFD") // separa letras de acentos
+    .replace(/[\u0300-\u036f]/g, "") // elimina acentos
+    .toLowerCase()
+}
 // Find worker by last two words of agent name
 export function findWorkerByAgent(agentName: string, workers: Worker[]): Worker | null {
-  console.log(agentName)
-  const searchParts = agentName.trim().toLowerCase().split(/\s+/)
+  const searchParts = normalizeText(agentName).trim().split(/\s+/)
 
   if (searchParts.length === 0) return null
 
   const matches = workers.filter(worker => {
-    const workerParts = worker.name.trim().toLowerCase().split(/\s+/)
+    const workerParts = normalizeText(worker.name).trim().split(/\s+/)
 
-    // Caso 1: match exacto de últimos N elementos (apellidos normalmente)
+    // Caso 1: match exacto de últimos N elementos
     const workerLast = workerParts.slice(-searchParts.length).join(' ')
     const searchFull = searchParts.join(' ')
     if (workerLast === searchFull) return true
 
-    // Caso 2: match flexible → todos los términos existen en el nombre
+    // Caso 2: match flexible
     return searchParts.every(part => workerParts.includes(part))
   })
 
-  // Evitar ambigüedad
-  if (matches.length === 1) {
-    return matches[0]
-  }
-
-  return null
+  return matches.length === 1 ? matches[0] : null
 }
-
 // Determine company based on contract type
 export function getCompanyFromContractType(contractTypeName: string): string {
   const lowerName = contractTypeName.toLowerCase()
