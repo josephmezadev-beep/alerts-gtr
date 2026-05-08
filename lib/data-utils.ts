@@ -10,10 +10,10 @@ export function processQueueData(data: QueueData[]): TableRow[] {
     const channel = item.channel
 
     // Customer mappings
-    if (dept === "CS" && (expertise === "live-order" || expertise === "nonlive-order" || expertise === "tier1") && channel === "chat") {
+    if (dept === "CS" && (expertise === "live-order" || expertise === "postorder-tier1" || expertise === "tier1") && channel === "chat") {
       return "Customer Tier1"
     }
-    if (dept === "CS" && expertise === "tier2" && channel === "case-inbox") {
+    if (dept === "CS" && expertise === "tier2" && ( channel === "case-inbox" || channel === "email")) {
       return "Customer Tier2"
     }
 
@@ -29,7 +29,7 @@ export function processQueueData(data: QueueData[]): TableRow[] {
     if (dept === "VS" && expertise === "tier1" && channel === "chat") {
       return "Vendor Chat"
     }
-    if (dept === "VS" && (expertise === "tier2" || expertise === "disputes") && channel === "case-inbox") {
+    if (dept === "VS" && (expertise === "tier2" || expertise === "disputes") && (channel === "case-inbox" || channel === "email")) {
       return "Vendor Tier2"
     }
 
@@ -37,7 +37,11 @@ export function processQueueData(data: QueueData[]): TableRow[] {
   }
 
   data.forEach((item) => {
+
     const channelName = getChannelName(item)
+    if (channelName == "Customer Tier1"){
+      console.log(item.onlineAgentCount)
+    }
     if (!channelName) return
 
     if (!channelMap[channelName]) {
@@ -51,14 +55,17 @@ export function processQueueData(data: QueueData[]): TableRow[] {
 
     channelMap[channelName].backlog += item.casesBacklog
     channelMap[channelName].tickets += item.activeTicketsCount
-    if (channelName == "Customer Tier1" || channelName == "Vendor Tier2") {
-      channelMap[channelName].head = Math.max(item.onlineAgentCount)
+    if (channelName == "Customer Tier1" || channelName == "Vendor Tier2" || channelName == "Customer Tier2") {
+      channelMap[channelName].head = Math.max(
+        channelMap[channelName].head,
+        item.onlineAgentCount
+      )
     } else {
       channelMap[channelName].head += item.onlineAgentCount
     }
 
     if (channelName == "Vendor Tier2") {
-      channelMap[channelName].backlog += (12391/2)
+      channelMap[channelName].backlog += (16255/3)
     }
   })
 
@@ -354,7 +361,7 @@ export function formatBacklogText(info: Tier2BacklogInfo): string {
   info.rider.hoursToSLA <= 0 ? textRider = 'SLA Vencido 🚨🚨' : textRider = `con ${info.rider.hoursToSLA - 1 } Hrs para estar fuera de Objetivo en SLA`
   let textVendor = ''
   info.vendor.hoursToSLA <= 0 ? textVendor = 'SLA Vencido 🚨🚨' : textVendor = `con ${info.vendor.hoursToSLA - 1 } Hrs para estar fuera de Objetivo en SLA`
-  const disputesText = '22391'
+  const disputesText = '26255'
   // const disputesText = info.disputes.cases > 10000 
   //   ? "+10000 casos" 
   //   : `${info.disputes.cases} casos`

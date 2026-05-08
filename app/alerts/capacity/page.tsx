@@ -5,7 +5,7 @@ import { QueueTable } from "@/components/queue-table"
 import type { ApiResponse, TableRow, QueueData } from "@/lib/types"
 import { processQueueData } from "@/lib/data-utils"
 
-const API_ENDPOINT = "https://api-glovo-eu.deliveryherocare.com/oneview/queue-monitor/v2/queues?token=%7B%22currentPage%22%3A%22%22%2C%22nextPage%22%3A%22%22%2C%22previousPages%22%3A%5B%5D%7D&pageSize=25&filter.queue.departments=CS%2CRS%2CVS&filter.queue.expertises=tier2%2Cdisputes%2Ctier1%2Clive-order%2Cnonlive-order&filter.channel=case-inbox%2Cchat&filter.queue.countries=ES&direction=desc&orderBy=queueName"
+const API_ENDPOINT = "https://api-glovo-eu.deliveryherocare.com/oneview/queue-monitor/v2/queues?token=%7B%22currentPage%22%3A%22%22%2C%22nextPage%22%3A%22%22%2C%22previousPages%22%3A%5B%5D%7D&pageSize=25&filter.channel=case-inbox%2Cchat%2Cemail&filter.queue.departments=CS%2CRS%2CVS&filter.queue.countries=ES&filter.queue.expertises=tier2%2Cdisputes%2Ctier1%2Clive-order%2Cpostorder-tier1&orderBy=casesBacklog&direction=desc"
 
 export default function CapacityPage() {
   const [data, setData] = useState<TableRow[]>([])
