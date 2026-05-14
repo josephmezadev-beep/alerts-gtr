@@ -10,7 +10,8 @@ export function processQueueData(data: QueueData[]): TableRow[] {
     const channel = item.channel
 
     // Customer mappings
-    if (dept === "CS" && (expertise === "live-order" || expertise === "postorder-tier1" || expertise === "tier1") && channel === "chat") {
+    if (dept === "CS" && (expertise === "live-order" || expertise === "postorder-tier1" || expertise === "nonlive-order") && channel === "chat") {
+      console.log(expertise)
       return "Customer Tier1"
     }
     if (dept === "CS" && expertise === "tier2" && ( channel === "case-inbox" || channel === "email")) {
@@ -40,7 +41,7 @@ export function processQueueData(data: QueueData[]): TableRow[] {
 
     const channelName = getChannelName(item)
     if (channelName == "Customer Tier1"){
-      console.log(item.onlineAgentCount)
+      console.log(item.activeTicketsCount)
     }
     if (!channelName) return
 
@@ -65,7 +66,7 @@ export function processQueueData(data: QueueData[]): TableRow[] {
     }
 
     if (channelName == "Vendor Tier2") {
-      channelMap[channelName].backlog += (16255/3)
+      channelMap[channelName].backlog += (25170/2)
     }
   })
 
@@ -361,7 +362,7 @@ export function formatBacklogText(info: Tier2BacklogInfo): string {
   info.rider.hoursToSLA <= 0 ? textRider = 'SLA Vencido 🚨🚨' : textRider = `con ${info.rider.hoursToSLA - 1 } Hrs para estar fuera de Objetivo en SLA`
   let textVendor = ''
   info.vendor.hoursToSLA <= 0 ? textVendor = 'SLA Vencido 🚨🚨' : textVendor = `con ${info.vendor.hoursToSLA - 1 } Hrs para estar fuera de Objetivo en SLA`
-  const disputesText = '26255'
+  const disputesText = '35170'
   // const disputesText = info.disputes.cases > 10000 
   //   ? "+10000 casos" 
   //   : `${info.disputes.cases} casos`
