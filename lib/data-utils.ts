@@ -66,7 +66,7 @@ export function processQueueData(data: QueueData[]): TableRow[] {
     }
 
     if (channelName == "Vendor Tier2") {
-      channelMap[channelName].backlog += (33461/2)
+      channelMap[channelName].backlog += (23461/2)
     }
   })
 
